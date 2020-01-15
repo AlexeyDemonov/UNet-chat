@@ -64,6 +64,7 @@
     <Compile Include="Assets\Tests\ChatUIManagerTests.cs" />
     <Compile Include="Assets\Tests\GlobalChatManagerTests.cs" />
     <Compile Include="Assets\Tests\MessageTestDummy.cs" />
+    <Compile Include="Assets\Tests\SettingsManagerTests.cs" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
     </Reference>
