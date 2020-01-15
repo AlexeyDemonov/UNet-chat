@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ChatGameManager
 {
-    readonly string _senderName = "Server";
+    readonly string _managerName = "Server";
 
     bool _gameIsRunning;
     int _pickedNumber;
@@ -12,7 +12,7 @@ public class ChatGameManager
 
     public void MessageArrived(string sender, string message)
     {
-        if(sender == this._senderName)
+        if(sender == this._managerName)
             return;
 
         if(!_gameIsRunning)
@@ -37,7 +37,7 @@ public class ChatGameManager
         _pickedNumber = UnityEngine.Random.Range(0, 101);
 
         string message = $"!GAME! {sender} started a game! I picked a number in range 0-100, try to guess it";
-        Request_BroadcastMessage?.Invoke(_senderName, message);
+        Request_BroadcastMessage?.Invoke(_managerName, message);
     }
 
     private void CheckNumber(string sender, int number)
@@ -60,6 +60,6 @@ public class ChatGameManager
             _gameIsRunning = false;
         }
 
-        Request_BroadcastMessage?.Invoke(_senderName, message);
+        Request_BroadcastMessage?.Invoke(_managerName, message);
     }
 }
