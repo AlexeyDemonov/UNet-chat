@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\ChatClient.cs" />
     <Compile Include="Assets\Scripts\ChatGameManager.cs" />
+    <Compile Include="Assets\Scripts\ChatUIManager.cs" />
     <Compile Include="Assets\Scripts\GlobalChatManager.cs" />
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

@@ -13,4 +13,9 @@ public class MessageTestDummy
         LastMessage = message;
         MessageArrived = true;
     }
+
+    public void AcceptMessage(string message)
+    {
+        AcceptMessage(null, message);
+    }
 }

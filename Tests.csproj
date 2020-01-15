@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Tests\ChatGameManagerTests.cs" />
+    <Compile Include="Assets\Tests\ChatUIManagerTests.cs" />
     <Compile Include="Assets\Tests\GlobalChatManagerTests.cs" />
     <Compile Include="Assets\Tests\MessageTestDummy.cs" />
     <Reference Include="UnityEngine.AIModule">
