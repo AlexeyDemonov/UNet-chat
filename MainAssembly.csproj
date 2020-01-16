@@ -64,6 +64,8 @@
     <Compile Include="Assets\Scripts\ChatGameManager.cs" />
     <Compile Include="Assets\Scripts\ChatUIManager.cs" />
     <Compile Include="Assets\Scripts\GlobalChatManager.cs" />
+    <Compile Include="Assets\Scripts\LogonUIManager.cs" />
+    <Compile Include="Assets\Scripts\PropertyBag.cs" />
     <Compile Include="Assets\Scripts\SettingsContainer.cs" />
     <Compile Include="Assets\Scripts\SettingsManager.cs" />
     <Reference Include="UnityEngine.AIModule">
