@@ -8,6 +8,7 @@ public class SettingsManager
     readonly string _filename = "Settings.xml";
 
     SettingsContainer DefaultSettings => new SettingsContainer() { ClientName = "user", Address = "localhost", Port = 7777 };
+    SettingsContainer LastLoadedSettings;
 
     public SettingsContainer Load()
     {
@@ -19,7 +20,9 @@ public class SettingsManager
             using (var stream = File.OpenRead(_filename))
             {
                 var serializer = new XmlSerializer(typeof(SettingsContainer));
-                return (SettingsContainer)serializer.Deserialize(stream);
+                var loadedSettings = (SettingsContainer)serializer.Deserialize(stream);
+                LastLoadedSettings = loadedSettings;
+                return loadedSettings;
             }
         }
         catch (Exception)
@@ -30,22 +33,39 @@ public class SettingsManager
 
     public void Save(SettingsContainer settings)
     {
-        try
+        if(ValidateSettingsAreNew(settings))
         {
-            using (var stream = File.Create(_filename))
+            try
             {
-                var serializer = new XmlSerializer(typeof(SettingsContainer));
-                serializer.Serialize(stream, settings);
+                using (var stream = File.Create(_filename))
+                {
+                    var serializer = new XmlSerializer(typeof(SettingsContainer));
+                    serializer.Serialize(stream, settings);
+                }
             }
-        }
-        catch (Exception)
-        {
-            /*Do nothing*/
+            catch (Exception)
+            {
+                /*Do nothing*/
+            }
         }
     }
 
     public async Task SaveAsync(SettingsContainer container)
     {
         await Task.Run(() => Save(container));
+    }
+
+    bool ValidateSettingsAreNew(SettingsContainer settings)
+    {
+        if(LastLoadedSettings == null)
+            return true;
+        else
+        {
+            return settings.ClientName != LastLoadedSettings.ClientName
+                ||
+                settings.Address != LastLoadedSettings.Address
+                ||
+                settings.Port != LastLoadedSettings.Port;
+        }
     }
 }

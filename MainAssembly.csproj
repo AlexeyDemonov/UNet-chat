@@ -63,7 +63,9 @@
     <Compile Include="Assets\Scripts\ChatClient.cs" />
     <Compile Include="Assets\Scripts\ChatGameManager.cs" />
     <Compile Include="Assets\Scripts\ChatUIManager.cs" />
+    <Compile Include="Assets\Scripts\ConnectionSetupManager.cs" />
     <Compile Include="Assets\Scripts\GlobalChatManager.cs" />
+    <Compile Include="Assets\Scripts\LogonInitializer.cs" />
     <Compile Include="Assets\Scripts\LogonUIManager.cs" />
     <Compile Include="Assets\Scripts\PropertyBag.cs" />
     <Compile Include="Assets\Scripts\SettingsContainer.cs" />

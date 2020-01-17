@@ -10,13 +10,15 @@ namespace Tests
     public class SettingsManagerTests
     {
         readonly string _filename = "Settings.xml";
-        readonly SettingsManager SettingsManager = new SettingsManager();
+        SettingsManager SettingsManager;
 
         [SetUp]
         public void SetUp()
         {
             if(File.Exists(_filename))
                 File.Delete(_filename);
+
+            SettingsManager = new SettingsManager();
         }
 
         [TearDown]
@@ -105,6 +107,75 @@ namespace Tests
             Assert.AreEqual(originalName, loadedContainer.ClientName);
             Assert.AreEqual(originalAddress, loadedContainer.Address);
             Assert.AreEqual(originalPort, loadedContainer.Port);
+        }
+
+        [Test]
+        public void Save_Load_DeleteFile_SaveAgainSameValues_FileNotCreated()
+        {
+            var originalName = "soldier76";
+            var originalAddress = "185.60.112.157";
+            var originalPort = 5060;
+
+            var container = new SettingsContainer() { ClientName = originalName, Address = originalAddress, Port = originalPort };
+
+            SettingsManager.Save(container);
+            SettingsManager.Load();
+            File.Delete(_filename);
+            SettingsManager.Save(container);
+
+            Assert.IsTrue(!File.Exists(_filename));
+        }
+
+        [UnityTest]
+        public IEnumerator SaveAsync_Load_DeleteFile_SaveAgainSameValues_FileNotCreated()
+        {
+            var originalName = "soldier76";
+            var originalAddress = "185.60.112.157";
+            var originalPort = 5060;
+
+            var container = new SettingsContainer() { ClientName = originalName, Address = originalAddress, Port = originalPort };
+
+            var task = SettingsManager.SaveAsync(container);
+            while (!task.IsCompleted)
+                yield return null;
+
+            SettingsManager.Load();
+            File.Delete(_filename);
+
+            task = SettingsManager.SaveAsync(container);
+            while (!task.IsCompleted)
+                yield return null;
+
+            Assert.IsTrue(!File.Exists(_filename));
+        }
+
+        [Test]
+        public void Save_Load_DeleteFile_SaveNewValues_NewFileCreated()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                var originalName = "soldier76";
+                var originalAddress = "185.60.112.157";
+                var originalPort = 5060;
+
+                var container = new SettingsContainer() { ClientName = originalName, Address = originalAddress, Port = originalPort };
+
+                SettingsManager.Save(container);
+                SettingsManager.Load();
+                File.Delete(_filename);
+
+                switch (i)
+                {
+                    case 0: container.ClientName = "Torbjorn"; break;
+                    case 1: container.Address = "localhost"; break;
+                    case 2: container.Port = 7080; break;
+                }
+
+                SettingsManager.Save(container);
+
+                Assert.IsTrue(File.Exists(_filename));
+                File.Delete(_filename);
+            }
         }
     }
 }
