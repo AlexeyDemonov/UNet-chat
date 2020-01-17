@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\ButtonByKeyboardKeyClicker.cs" />
     <Compile Include="Assets\Scripts\ChatClient.cs" />
     <Compile Include="Assets\Scripts\ChatGameManager.cs" />
     <Compile Include="Assets\Scripts\ChatUIManager.cs" />
