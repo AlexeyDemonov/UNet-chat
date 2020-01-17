@@ -16,6 +16,12 @@ public class ChatUIManager : MonoBehaviour
 
     public event Action<string> Request_Send;
 
+    // Awake is called when the script instance is being loaded
+    void Awake()
+    {
+        PropertyBag.LocalChatUIManager = this;
+    }
+
     // Start is called just before any of the Update methods is called the first time
     void Start()
     {
