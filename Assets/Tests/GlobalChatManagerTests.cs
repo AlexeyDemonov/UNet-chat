@@ -40,5 +40,6 @@ namespace Tests
         }
 
         //The rest can be tested only in network environment and after ChatClient class full implementation
+        //The rest was tested manually and functionality is working as intended, adding corresponding tests would be too expensive at this point
     }
 }

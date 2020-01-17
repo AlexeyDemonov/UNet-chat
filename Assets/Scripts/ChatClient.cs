@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -6,45 +7,59 @@ public class ChatClient : NetworkBehaviour
 {
     enum Uniqueness { UNDEFINED, UNIQUE, NONUNIQUE } 
 
-    [SyncVar]
-    public string ClientName;
-    [SyncVar]
+    public string ClientName;    
     Uniqueness NameIsUnique = Uniqueness.UNDEFINED;
 
     public event Action<ChatClient, string> Request_BroadcastMessage;
     public event Action<string, string> Event_MessageArrived;
 
-    public override void OnStartClient()
+    //public override void OnStartClient() //It is not working for some reason
+    void Start()
     {
         if(this.isLocalPlayer)
         {
-            ClientName = PropertyBag.ClientName;
-            CmdValidateNameUnique();
+            StartCoroutine(Initialize());
+        }
+    }
 
-            if(this.NameIsUnique == Uniqueness.UNDEFINED)
-                Debug.LogError("ChatClient.OnStartClient: NameIsUnique is undefined on client side");
-            else if(this.NameIsUnique == Uniqueness.UNIQUE)
-            {
-                PropertyBag.LocalChatUIManager.Request_Send += Handle_LocalSendRequest;
-                Event_MessageArrived += PropertyBag.LocalChatUIManager.AddToBoard;
+    IEnumerator Initialize()
+    {
+        ClientName = PropertyBag.ClientName;
+        CmdValidateNameUnique(ClientName);
 
-                CmdConnectToGlobalManager();
-            }
-            else/*if(this.NameIsUnique == Uniqueness.NONUNIQUE)*/
-            {
-                PropertyBag.ErrorMessage = "Client with this name already exists on this server";
-                CmdDisconnectClient();
-            }
+        while (this.NameIsUnique == Uniqueness.UNDEFINED)
+        {
+            /*Do nothing*/
+            yield return null;//Wait for confirmation
+        }
+
+        if (this.NameIsUnique == Uniqueness.UNIQUE)
+        {
+            PropertyBag.LocalChatUIManager.Request_Send += Handle_LocalSendRequest;
+            Event_MessageArrived += PropertyBag.LocalChatUIManager.AddToBoard;
+
+            CmdConnectToGlobalManager();
+        }
+        else if (this.NameIsUnique == Uniqueness.NONUNIQUE)
+        {
+            PropertyBag.ErrorMessage = "Client with this name already exists on this server";
+            CmdDisconnectClient();
         }
     }
 
     [Command]
-    void CmdValidateNameUnique()
+    void CmdValidateNameUnique(string name)
     {
-        if(this.ClientName/*on server side*/ == null)
-            Debug.LogError("ChatClient.CmdValidateNameUnique: ClientName is null on server side");
-
+        this.ClientName = name;//Server side synchronisation
         this.NameIsUnique = PropertyBag.GlobalChatManager.ValidateNameIsNew(this.ClientName) ? Uniqueness.UNIQUE : Uniqueness.NONUNIQUE;
+
+        TargetSetNameUniquness(this.connectionToClient, this.NameIsUnique);
+    }
+
+    [TargetRpc]
+    void TargetSetNameUniquness(NetworkConnection connection, Uniqueness uniqueness)
+    {
+        this.NameIsUnique = uniqueness;//Client side synchronisation
     }
 
     [Command]

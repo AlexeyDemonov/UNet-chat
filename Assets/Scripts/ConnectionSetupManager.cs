@@ -41,13 +41,13 @@ public class ConnectionSetupManager : NetworkManager
         Event_ClientDisconnected?.Invoke(conn);
     }
 
-    public override void OnClientError(NetworkConnection conn, int errorCode)
-    {
-        PropertyBag.ErrorMessage = "Connection error, check your address/port settings";
-    }
+    public override void OnClientError(NetworkConnection conn, int errorCode) => ReportConnectionError();
+    public override void OnServerError(NetworkConnection conn, int errorCode) => ReportConnectionError();
+    public override void OnClientDisconnect(NetworkConnection conn) => ReportConnectionError();
 
-    public override void OnServerError(NetworkConnection conn, int errorCode)
+    void ReportConnectionError()
     {
-        PropertyBag.ErrorMessage = "Connection error, check your address/port settings";
+        if(PropertyBag.ErrorMessage == null)//Do not override first error
+            PropertyBag.ErrorMessage = "Connection error, check your address/port settings";
     }
 }
